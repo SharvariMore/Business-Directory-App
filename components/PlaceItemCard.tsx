@@ -4,66 +4,91 @@ import React from "react";
 const BASE_URL_PHOTO =
   "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800";
 
-function PlaceItemCard({ place }: any) {
+interface PlacePhoto {
+  photo_reference: string;
+}
+
+interface Place {
+  place_id?: string;
+  name?: string;
+  formatted_address?: string;
+  rating?: number;
+  user_ratings_total?: number;
+  photos?: PlacePhoto[];
+}
+
+interface PlaceItemCardProps {
+  place: Place;
+}
+
+function PlaceItemCard({ place }: PlaceItemCardProps) {
+  const photoReference = place?.photos?.[0]?.photo_reference;
+  const googlePlacesKey = process.env.NEXT_PUBLIC_GOOGLE_PLACE_KEY;
+
+  const imageUrl =
+    photoReference && googlePlacesKey
+      ? `${BASE_URL_PHOTO}&photo_reference=${photoReference}&key=${googlePlacesKey}`
+      : "/placeholder.jpg";
+
   return (
-    <div className="w-full z-10 rounded-xl shadow-md hover:scale-105 transition-all cursor-pointer">
-      {place?.photos ? (
-        <Image
-          src={
-            BASE_URL_PHOTO +
-            "&photo_reference=" +
-            place?.photos[0]?.photo_reference +
-            "&key=" +
-            process.env.NEXT_PUBLIC_GOOGLE_PLACE_KEY
-          }
-          alt="placeholder"
-          width={200}
-          height={80}
-          className="w-full h-37.5 object-cover rounded-t-xl"
-        />
-      ) : (
-        <Image
-          src="/placeholder.jpg"
-          alt="placeholder"
-          width={200}
-          height={80}
-          className="w-full h-37.5 object-cover rounded-t-xl"
-        />
-      )}
-      <div className="p-2">
-        <h2 className="line-clamp-2">{place.name}</h2>
-        <div className="flex gap-2 mt-3">
+    <article
+      className="flex h-100 w-full cursor-pointer flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+    >
+      <Image
+        src={imageUrl}
+        alt={place?.name ? `${place.name} image` : "Place image"}
+        width={800}
+        height={450}
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        className="h-56.25 w-full shrink-0 object-cover"
+      />
+
+      {/* Card content */}
+      <div className="flex min-h-0 flex-1 flex-col p-3">
+        {/* Place name */}
+        <h2 className="min-h-14 line-clamp-2 text-xl font-medium leading-7 text-black">
+          {place?.name || "Unknown place"}
+        </h2>
+
+        {/* Address */}
+        <div className="mt-3 flex min-h-12 items-start gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-6 h-6 text-red-500"
+            className="h-6 w-6 shrink-0 text-red-500"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
             />
+
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
             />
           </svg>
-          <h2 className="text-[12px] text-gray-400 line-clamp-2">
-            {place.formatted_address}
-          </h2>
+
+          <p className="line-clamp-2 text-sm leading-5 text-gray-400">
+            {place?.formatted_address || "Address unavailable"}
+          </p>
         </div>
-        <div className="flex gap-2 mt-3">
+
+        {/* Rating */}
+        <div className="flex items-center gap-2 pt-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="w-4 h-4 text-red-500"
+            className="h-5 w-5 shrink-0 text-red-500"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -72,12 +97,16 @@ function PlaceItemCard({ place }: any) {
             />
           </svg>
 
-          <h2 className="text-[12px] text-gray-400 line-clamp-2 tracking-wider">
-            {place.rating} ({place.user_ratings_total})
-          </h2>
+          <p className="text-sm tracking-wide text-gray-400">
+            {place?.rating ?? "No rating"}
+
+            {place?.user_ratings_total !== undefined && (
+              <span> ({place.user_ratings_total})</span>
+            )}
+          </p>
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
