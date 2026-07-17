@@ -1,33 +1,90 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
+const navigationItems = [
+  {
+    name: "Home",
+    href: "/",
+  },
+  {
+    name: "About",
+    href: "/about",
+  },
+  {
+    name: "Contact Us",
+    href: "/contact",
+  },
+];
+
 function Header() {
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href === "/") {
+      return pathname === "/";
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   return (
-    <div className="flex justify-between p-3 px-5 shadow-sm z-30">
-      <div className="flex gap-3 items-center">
+    <header className="relative z-30 flex items-center justify-between bg-white p-3 px-5 shadow-sm">
+      {/* Logo */}
+      <Link href="/" className="flex items-center gap-3">
         <Image
           src="/logo.png"
-          alt="logo"
+          alt="Explore logo"
           width={50}
           height={50}
-          loading="eager"
+          priority
         />
-        <h2 className="text-[25px] font-semibold text-red-600 hover:text-rose-800 tracking-widest font-serif">
+
+        <h2 className="font-serif text-[25px] font-semibold tracking-widest text-red-600 transition-colors hover:text-rose-800">
           EXPLORE
         </h2>
-      </div>
-      <ul className="flex gap-8 items-center">
-        <li className="text-[16px] font-serif hover:text-red-500 cursor-pointer">
-          Home
-        </li>
-        <li className="text-[16px] font-serif hover:text-red-500 cursor-pointer">
-          About
-        </li>
-        <li className="text-[16px] font-serif hover:text-red-500 cursor-pointer">
-          Contact Us
-        </li>
-      </ul>
-    </div>
+      </Link>
+
+      {/* Navigation */}
+      <nav aria-label="Main navigation">
+        <ul className="flex items-center gap-4 md:gap-8">
+          {navigationItems.map((item) => {
+            const active = isActive(item.href);
+
+            return (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`
+                    relative
+                    py-2
+                    font-serif
+                    text-[14px]
+                    transition-colors
+                    md:text-[16px]
+                    ${
+                      active
+                        ? "font-semibold text-red-600"
+                        : "text-gray-800 hover:text-red-500"
+                    }
+                  `}
+                >
+                  {item.name}
+
+                  {active && (
+                    <span className="absolute -bottom-1 left-0 h-[2px] w-full rounded-full bg-red-600" />
+                  )}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </header>
   );
 }
 
