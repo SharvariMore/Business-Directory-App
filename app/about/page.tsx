@@ -48,9 +48,7 @@ function AboutPage() {
             <div className="rounded-xl border border-gray-200 p-5">
               <div className="mb-3 text-3xl">🗺️</div>
 
-              <h2 className="mb-2 text-xl font-semibold">
-                Navigate and share
-              </h2>
+              <h2 className="mb-2 text-xl font-semibold">Navigate and share</h2>
 
               <p className="leading-6 text-gray-600">
                 Open directions in Google Maps or share a location through your
@@ -68,11 +66,40 @@ function AboutPage() {
               Return to the home page and search for places near your city.
             </p>
 
-            <Link
+            {/* <Link
               href="/"
-              className="inline-flex rounded-full bg-red-600 px-6 py-3 text-white transition-all hover:scale-105 hover:bg-red-700"
+              className="inline-flex rounded-full bg-red-600 px-6 py-3 text-white transition-all hover:scale-105 hover:bg-red-700 font-semibold"
             >
               Explore places
+            </Link> */}
+
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 rounded-full bg-red-600 px-6 py-3 text-white font-stretch-95% transition-all hover:scale-105 hover:bg-red-700"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-6 w-6"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="9" />
+
+                <path
+                  fill="currentColor"
+                  stroke="currentColor"
+                  d="m15.8 8.2-2.1 5.5-5.5 2.1 2.1-5.5 5.5-2.1Z"
+                />
+
+                <circle cx="12" cy="12" r="1" fill="white" stroke="white" />
+              </svg>
+
+              <span>Explore places</span>
             </Link>
           </div>
         </div>
